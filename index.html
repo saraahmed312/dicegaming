@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Roller API Test</title>
+    <script>
+        async function rollDice(sides) {
+            try {
+                const response = await fetch(`https://my-dice-roller-api.azurewebsites.net/roll/${sides}`);
+                if (!response.ok) throw new Error('Failed to fetch');
+                const data = await response.json();
+                document.getElementById('result').innerText = `Rolled: ${data.roll}`;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('result').innerText = 'Error rolling dice';
+            }
+        }
+
+        async function testCorsFailure() {
+            try {
+                const response = await fetch('https://another-domain.com/roll/6'); // Intentional CORS error
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.error('CORS Error:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Test Dice Roller API</h1>
+    <button onclick="rollDice(6)">Roll a 6-sided dice</button>
+    <button onclick="testCorsFailure()">Test CORS Failure</button>
+    <p id="result"></p>
+</body>
+</html>
